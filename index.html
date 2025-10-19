@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steal A Brainrot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Луна */
+        .moon {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f0f0f0, #cccccc);
+            border-radius: 50%;
+            box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.8),
+                        0 0 60px 20px rgba(255, 255, 255, 0.4);
+            z-index: 2;
+            animation: moonGlow 4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes moonGlow {
+            0% { box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.8),
+                             0 0 60px 20px rgba(255, 255, 255, 0.4); }
+            100% { box-shadow: 0 0 40px 15px rgba(255, 255, 255, 0.9),
+                               0 0 80px 30px rgba(255, 255, 255, 0.6); }
+        }
+        
+        /* Звездное небо */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 50%;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 5px 1px #ffffff;
+        }
+        
+        .star:hover {
+            background-color: #2ecc71;
+            box-shadow: 0 0 10px 3px #2ecc71;
+            transform: scale(2);
+        }
+        
+        /* Метеорит */
+        .meteor {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(45deg, #ffffff, #cccccc, #ffffff);
+            border-radius: 50%;
+            box-shadow: 0 0 15px 5px #ffffff;
+            z-index: -1;
+            opacity: 0;
+        }
+        
+        .meteor-trail {
+            position: fixed;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffffff, #cccccc);
+            border-radius: 2px;
+            box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.6);
+            z-index: -1;
+            opacity: 0;
+            transform-origin: left center;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 30px;
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ffffff, #cccccc, #ffffff, #999999);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            border-radius: 2px;
+            box-shadow: 0 0 10px #ffffff;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        
+        /* Таймер */
+        .countdown-container {
+            background: rgba(40, 40, 40, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px auto;
+            max-width: 600px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .countdown-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffffff, #cccccc, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .countdown-date {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #cccccc;
+        }
+        
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .countdown-unit {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 80px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .countdown-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+        
+        .countdown-label {
+            font-size: 0.9rem;
+            color: #cccccc;
+            text-transform: uppercase;
+        }
+        
+        .info-text {
+            background: rgba(40, 40, 40, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 800px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cccccc;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .brainrots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .brainrot-card {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brainrot-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 17px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .brainrot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+        }
+        
+        .brainrot-card:hover::before {
+            opacity: 1;
+        }
+        
+        /* Индивидуальные ауры для каждого бреинрота */
+        .brainrot-card:nth-child(1)::before { background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4); box-shadow: 0 0 20px 5px rgba(255, 105, 180, 0.7); }
+        .brainrot-card:nth-child(2)::before { background: linear-gradient(45deg, #00ffff, #0080ff, #00ffff); box-shadow: 0 0 20px 5px rgba(0, 255, 255, 0.7); }
+        .brainrot-card:nth-child(3)::before { background: linear-gradient(45deg, #ffff00, #ffa500, #ffff00); box-shadow: 0 0 20px 5px rgba(255, 255, 0, 0.7); }
+        .brainrot-card:nth-child(4)::before { background: linear-gradient(45deg, #ff00ff, #800080, #ff00ff); box-shadow: 0 0 20px 5px rgba(255, 0, 255, 0.7); }
+        .brainrot-card:nth-child(5)::before { background: linear-gradient(45deg, #00ff00, #008000, #00ff00); box-shadow: 0 0 20px 5px rgba(0, 255, 0, 0.7); }
+        .brainrot-card:nth-child(6)::before { background: linear-gradient(45deg, #ff4500, #ff0000, #ff4500); box-shadow: 0 0 20px 5px rgba(255, 69, 0, 0.7); }
+        .brainrot-card:nth-child(7)::before { background: linear-gradient(45deg, #9400d3, #4b0082, #9400d3); box-shadow: 0 0 20px 5px rgba(148, 0, 211, 0.7); }
+        .brainrot-card:nth-child(8)::before { background: linear-gradient(45deg, #00ced1, #008b8b, #00ced1); box-shadow: 0 0 20px 5px rgba(0, 206, 209, 0.7); }
+        .brainrot-card:nth-child(9)::before { background: linear-gradient(45deg, #ffd700, #ffa500, #ffd700); box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.7); }
+        .brainrot-card:nth-child(10)::before { background: linear-gradient(45deg, #ff6347, #ff4500, #ff6347); box-shadow: 0 0 20px 5px rgba(255, 99, 71, 0.7); }
+        .brainrot-card:nth-child(11)::before { background: linear-gradient(45deg, #7fff00, #32cd32, #7fff00); box-shadow: 0 0 20px 5px rgba(127, 255, 0, 0.7); }
+        .brainrot-card:nth-child(12)::before { background: linear-gradient(45deg, #dc143c, #b22222, #dc143c); box-shadow: 0 0 20px 5px rgba(220, 20, 60, 0.7); }
+        .brainrot-card:nth-child(13)::before { background: linear-gradient(45deg, #00bfff, #1e90ff, #00bfff); box-shadow: 0 0 20px 5px rgba(0, 191, 255, 0.7); }
+        .brainrot-card:nth-child(14)::before { background: linear-gradient(45deg, #ff8c00, #ff7f50, #ff8c00); box-shadow: 0 0 20px 5px rgba(255, 140, 0, 0.7); }
+        .brainrot-card:nth-child(15)::before { background: linear-gradient(45deg, #9932cc, #8a2be2, #9932cc); box-shadow: 0 0 20px 5px rgba(153, 50, 204, 0.7); }
+        .brainrot-card:nth-child(16)::before { background: linear-gradient(45deg, #00fa9a, #00ff7f, #00fa9a); box-shadow: 0 0 20px 5px rgba(0, 250, 154, 0.7); }
+        .brainrot-card:nth-child(17)::before { background: linear-gradient(45deg, #ff1493, #c71585, #ff1493); box-shadow: 0 0 20px 5px rgba(255, 20, 147, 0.7); }
+        .brainrot-card:nth-child(18)::before { background: linear-gradient(45deg, #1e90ff, #0000ff, #1e90ff); box-shadow: 0 0 20px 5px rgba(30, 144, 255, 0.7); }
+        .brainrot-card:nth-child(19)::before { background: linear-gradient(45deg, #ffdab9, #f4a460, #ffdab9); box-shadow: 0 0 20px 5px rgba(255, 218, 185, 0.7); }
+        .brainrot-card:nth-child(20)::before { background: linear-gradient(45deg, #da70d6, #ba55d3, #da70d6); box-shadow: 0 0 20px 5px rgba(218, 112, 214, 0.7); }
+        .brainrot-card:nth-child(21)::before { background: linear-gradient(45deg, #f0e68c, #eee8aa, #f0e68c); box-shadow: 0 0 20px 5px rgba(240, 230, 140, 0.7); }
+        .brainrot-card:nth-child(22)::before { background: linear-gradient(45deg, #98fb98, #90ee90, #98fb98); box-shadow: 0 0 20px 5px rgba(152, 251, 152, 0.7); }
+        .brainrot-card:nth-child(23)::before { background: linear-gradient(45deg, #ffb6c1, #ff69b4, #ffb6c1); box-shadow: 0 0 20px 5px rgba(255, 182, 193, 0.7); }
+        .brainrot-card:nth-child(24)::before { background: linear-gradient(45deg, #dda0dd, #ee82ee, #dda0dd); box-shadow: 0 0 20px 5px rgba(221, 160, 221, 0.7); }
+        .brainrot-card:nth-child(25)::before { background: linear-gradient(45deg, #b0e0e6, #87ceeb, #b0e0e6); box-shadow: 0 0 20px 5px rgba(176, 224, 230, 0.7); }
+        .brainrot-card:nth-child(26)::before { background: linear-gradient(45deg, #f5deb3, #deb887, #f5deb3); box-shadow: 0 0 20px 5px rgba(245, 222, 179, 0.7); }
+        .brainrot-card:nth-child(27)::before { background: linear-gradient(45deg, #d8bfd8, #dda0dd, #d8bfd8); box-shadow: 0 0 20px 5px rgba(216, 191, 216, 0.7); }
+        .brainrot-card:nth-child(28)::before { background: linear-gradient(45deg, #f0fff0, #e0ffe0, #f0fff0); box-shadow: 0 0 20px 5px rgba(240, 255, 240, 0.7); }
+        .brainrot-card:nth-child(29)::before { background: linear-gradient(45deg, #ffe4e1, #ffdab9, #ffe4e1); box-shadow: 0 0 20px 5px rgba(255, 228, 225, 0.7); }
+        .brainrot-card:nth-child(30)::before { background: linear-gradient(45deg, #e6e6fa, #d8bfd8, #e6e6fa); box-shadow: 0 0 20px 5px rgba(230, 230, 250, 0.7); }
+        
+        .brainrot-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #333333, #555555);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .brainrot-icon::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 55px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .brainrot-card:hover .brainrot-icon::before {
+            opacity: 1;
+        }
+        
+        /* Индивидуальные ауры для иконок */
+        .brainrot-card:nth-child(1) .brainrot-icon::before { background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4); box-shadow: 0 0 20px 5px rgba(255, 105, 180, 0.7); }
+        .brainrot-card:nth-child(2) .brainrot-icon::before { background: linear-gradient(45deg, #00ffff, #0080ff, #00ffff); box-shadow: 0 0 20px 5px rgba(0, 255, 255, 0.7); }
+        .brainrot-card:nth-child(3) .brainrot-icon::before { background: linear-gradient(45deg, #ffff00, #ffa500, #ffff00); box-shadow: 0 0 20px 5px rgba(255, 255, 0, 0.7); }
+        .brainrot-card:nth-child(4) .brainrot-icon::before { background: linear-gradient(45deg, #ff00ff, #800080, #ff00ff); box-shadow: 0 0 20px 5px rgba(255, 0, 255, 0.7); }
+        .brainrot-card:nth-child(5) .brainrot-icon::before { background: linear-gradient(45deg, #00ff00, #008000, #00ff00); box-shadow: 0 0 20px 5px rgba(0, 255, 0, 0.7); }
+        .brainrot-card:nth-child(6) .brainrot-icon::before { background: linear-gradient(45deg, #ff4500, #ff0000, #ff4500); box-shadow: 0 0 20px 5px rgba(255, 69, 0, 0.7); }
+        .brainrot-card:nth-child(7) .brainrot-icon::before { background: linear-gradient(45deg, #9400d3, #4b0082, #9400d3); box-shadow: 0 0 20px 5px rgba(148, 0, 211, 0.7); }
+        .brainrot-card:nth-child(8) .brainrot-icon::before { background: linear-gradient(45deg, #00ced1, #008b8b, #00ced1); box-shadow: 0 0 20px 5px rgba(0, 206, 209, 0.7); }
+        .brainrot-card:nth-child(9) .brainrot-icon::before { background: linear-gradient(45deg, #ffd700, #ffa500, #ffd700); box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.7); }
+        .brainrot-card:nth-child(10) .brainrot-icon::before { background: linear-gradient(45deg, #ff6347, #ff4500, #ff6347); box-shadow: 0 0 20px 5px rgba(255, 99, 71, 0.7); }
+        .brainrot-card:nth-child(11) .brainrot-icon::before { background: linear-gradient(45deg, #7fff00, #32cd32, #7fff00); box-shadow: 0 0 20px 5px rgba(127, 255, 0, 0.7); }
+        .brainrot-card:nth-child(12) .brainrot-icon::before { background: linear-gradient(45deg, #dc143c, #b22222, #dc143c); box-shadow: 0 0 20px 5px rgba(220, 20, 60, 0.7); }
+        .brainrot-card:nth-child(13) .brainrot-icon::before { background: linear-gradient(45deg, #00bfff, #1e90ff, #00bfff); box-shadow: 0 0 20px 5px rgba(0, 191, 255, 0.7); }
+        .brainrot-card:nth-child(14) .brainrot-icon::before { background: linear-gradient(45deg, #ff8c00, #ff7f50, #ff8c00); box-shadow: 0 0 20px 5px rgba(255, 140, 0, 0.7); }
+        .brainrot-card:nth-child(15) .brainrot-icon::before { background: linear-gradient(45deg, #9932cc, #8a2be2, #9932cc); box-shadow: 0 0 20px 5px rgba(153, 50, 204, 0.7); }
+        .brainrot-card:nth-child(16) .brainrot-icon::before { background: linear-gradient(45deg, #00fa9a, #00ff7f, #00fa9a); box-shadow: 0 0 20px 5px rgba(0, 250, 154, 0.7); }
+        .brainrot-card:nth-child(17) .brainrot-icon::before { background: linear-gradient(45deg, #ff1493, #c71585, #ff1493); box-shadow: 0 0 20px 5px rgba(255, 20, 147, 0.7); }
+        .brainrot-card:nth-child(18) .brainrot-icon::before { background: linear-gradient(45deg, #1e90ff, #0000ff, #1e90ff); box-shadow: 0 0 20px 5px rgba(30, 144, 255, 0.7); }
+        .brainrot-card:nth-child(19) .brainrot-icon::before { background: linear-gradient(45deg, #ffdab9, #f4a460, #ffdab9); box-shadow: 0 0 20px 5px rgba(255, 218, 185, 0.7); }
+        .brainrot-card:nth-child(20) .brainrot-icon::before { background: linear-gradient(45deg, #da70d6, #ba55d3, #da70d6); box-shadow: 0 0 20px 5px rgba(218, 112, 214, 0.7); }
+        .brainrot-card:nth-child(21) .brainrot-icon::before { background: linear-gradient(45deg, #f0e68c, #eee8aa, #f0e68c); box-shadow: 0 0 20px 5px rgba(240, 230, 140, 0.7); }
+        .brainrot-card:nth-child(22) .brainrot-icon::before { background: linear-gradient(45deg, #98fb98, #90ee90, #98fb98); box-shadow: 0 0 20px 5px rgba(152, 251, 152, 0.7); }
+        .brainrot-card:nth-child(23) .brainrot-icon::before { background: linear-gradient(45deg, #ffb6c1, #ff69b4, #ffb6c1); box-shadow: 0 0 20px 5px rgba(255, 182, 193, 0.7); }
+        .brainrot-card:nth-child(24) .brainrot-icon::before { background: linear-gradient(45deg, #dda0dd, #ee82ee, #dda0dd); box-shadow: 0 0 20px 5px rgba(221, 160, 221, 0.7); }
+        .brainrot-card:nth-child(25) .brainrot-icon::before { background: linear-gradient(45deg, #b0e0e6, #87ceeb, #b0e0e6); box-shadow: 0 0 20px 5px rgba(176, 224, 230, 0.7); }
+        .brainrot-card:nth-child(26) .brainrot-icon::before { background: linear-gradient(45deg, #f5deb3, #deb887, #f5deb3); box-shadow: 0 0 20px 5px rgba(245, 222, 179, 0.7); }
+        .brainrot-card:nth-child(27) .brainrot-icon::before { background: linear-gradient(45deg, #d8bfd8, #dda0dd, #d8bfd8); box-shadow: 0 0 20px 5px rgba(216, 191, 216, 0.7); }
+        .brainrot-card:nth-child(28) .brainrot-icon::before { background: linear-gradient(45deg, #f0fff0, #e0ffe0, #f0fff0); box-shadow: 0 0 20px 5px rgba(240, 255, 240, 0.7); }
+        .brainrot-card:nth-child(29) .brainrot-icon::before { background: linear-gradient(45deg, #ffe4e1, #ffdab9, #ffe4e1); box-shadow: 0 0 20px 5px rgba(255, 228, 225, 0.7); }
+        .brainrot-card:nth-child(30) .brainrot-icon::before { background: linear-gradient(45deg, #e6e6fa, #d8bfd8, #e6e6fa); box-shadow: 0 0 20px 5px rgba(230, 230, 250, 0.7); }
+        
+        .brainrot-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .brainrot-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #fff;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #000000, #333333, #666666, #999999, #cccccc, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .available-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: #2ecc71;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-shadow: 0 0 10px rgba(46, 204, 113, 0.7);
+        }
+        
+        .available-indicator::before {
+            content: '✓';
+            margin-right: 5px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(46, 204, 113, 0.9);
+        }
+        
+        .join-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #333333, #555555);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .join-btn:hover {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.7);
+            transform: translateY(-3px);
+        }
+        
+        .join-btn:not(:hover) {
+            background: linear-gradient(45deg, #333333, #555555);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transform: translateY(0);
+        }
+        
+        /* Эффект искр */
+        .spark {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 0 10px 3px #2ecc71;
+            z-index: 10;
+        }
+        
+        .mini-spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 0 8px 2px #2ecc71;
+            z-index: 10;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .brainrots-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .countdown-timer {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Луна -->
+    <div class="moon"></div>
+    
+    <!-- Звездное небо -->
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header>
+            <h1>STEAL A BRAINROT</h1>
+            <p class="subtitle">Collect your unique brainrots and become the most influential player!</p>
+            
+            <!-- Таймер Admin Abuse -->
+            <div class="countdown-container">
+                <div class="countdown-title">Admin Abuse Event</div>
+                <div class="countdown-date">Next event: October 22, 2025 at 3:00 AM</div>
+                <div class="countdown-timer">
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="days">02</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="hours">08</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="minutes">02</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="seconds">31</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-text">
+                If you want to get these brainrots, you must have the best brainrots you own. Trade, collect and become the ultimate brainrot master!
+            </div>
+        </header>
+        
+        <div class="brainrots-grid">
+            <!-- Graipussi Medussi -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429495634754404564/Graipuss.webp?ex=68f6590e&is=68f5078e&hm=c40aae93b558b25664bb2c1b3b9928ab6dd7d398fce39b37d3a6a27bcc3627d1&=&format=webp" alt="Graipussi Medussi">
+                </div>
+                <div class="brainrot-name">Graipussi Medussi</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Hot hotspot -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429495844628861019/latest.png?ex=68f65940&is=68f507c0&hm=43dd4b8cae7933887b150ceca33447f17e9b85ac2ea032e781bfd8d529c7cd44&=&format=webp&quality=lossless" alt="Hot hotspot">
+                </div>
+                <div class="brainrot-name">Hot hotspot</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Los Nooo My Hotspotsitos -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429496635322404894/latest.png?ex=68f659fc&is=68f5087c&hm=1a32ea963b0284986c1802840151cbfe7d1d4df25805f3d06a028d2fb9527b02&=&format=webp&quality=lossless" alt="Los Nooo My Hotspotsitos">
+                </div>
+                <div class="brainrot-name">Los Nooo My Hotspotsitos</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Chicleteira Bicicleteira -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429496876226318477/latest.png?ex=68f65a36&is=68f508b6&hm=b55041ebcbc75a80bc0c710745a4b81e5f98ed79086a7bb4424a8f6da3ea5009&=&format=webp&quality=lossless" alt="Chicleteira Bicicleteira">
+                </div>
+                <div class="brainrot-name">Chicleteira Bicicleteira</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Los Combinasionas -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429497084918108302/latest.png?ex=68f65a67&is=68f508e7&hm=3ea4c5211d0b5d0c230f1a58a828395305abac9dac4f918ea3be4cd607f0fb69&=&format=webp&quality=lossless&width=470&height=350" alt="Los Combinasionas">
+                </div>
+                <div class="brainrot-name">Los Combinasionas</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Tictac Sahur -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429497236789657700/latest.png?ex=68f65a8c&is=68f5090c&hm=75c71496b83b3b2060cfc5fcf9d238be6c148fce87be469c9427f0cc05582d73&=&format=webp&quality=lossless" alt="Tictac Sahur">
+                </div>
+                <div class="brainrot-name">Tictac Sahur</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- La Grande Combinasion -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429497569637306459/latest.png?ex=68f65adb&is=68f5095b&hm=2c48ed65b79e5ffb636375c7e7c0bccca5ed866bfa1194bb7dbd4083a3f9d99f&=&format=webp&quality=lossless" alt="La Grande Combinasion">
+                </div>
+                <div class="brainrot-name">La Grande Combinasion</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Nuclearo Dinossauro -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429501762871623733/latest.png?ex=68f65ec3&is=68f50d43&hm=1b04830a81f4e1a0e330b782e6d74bf1a1eae32ea061792a5b4d23b29bcd2771&=&format=webp&quality=lossless" alt="Nuclearo Dinossauro">
+                </div>
+                <div class="brainrot-name">Nuclearo Dinossauro</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Esok Sekolah -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429501628595044473/latest.png?ex=68f65ea3&is=68f50d23&hm=66a25b8889f180b9fad96e045cd0e2138336d688c86420ed3f3a305c2fc4f914&=&format=webp&quality=lossless" alt="Esok Sekolah">
+                </div>
+                <div class="brainrot-name">Esok Sekolah</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Ketupat Kepat -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429501557568704593/latest.png?ex=68f65e92&is=68f50d12&hm=6c71b2631b632f87036929dfa7bce2b333d6301a1a8ebff70a1895a2a8fc3b06&=&format=webp&quality=lossless" alt="Ketupat Kepat">
+                </div>
+                <div class="brainrot-name">Ketupat Kepat</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- To to to Sahur -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429501470041964624/latest.png?ex=68f65e7d&is=68f50cfd&hm=a1afcd42938def3e66b842f1114e93654ce41406cc6f4d9e956f826e27e72675&=&format=webp&quality=lossless" alt="To to to Sahur">
+                </div>
+                <div class="brainrot-name">To to to Sahur</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Los Chicleteiras -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429501294535774318/latest.png?ex=68f65e53&is=68f50cd3&hm=be0ebba017731e8912c0d6505a67a9730d0e2b349c7097aaeeb65cae671aa0b0&=&format=webp&quality=lossless" alt="Los Chicleteiras">
+                </div>
+                <div class="brainrot-name">Los Chicleteiras</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Money Money Puggy -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429501232338178098/latest.png?ex=68f65e44&is=68f50cc4&hm=19e9c591985e33589f35e0789a989fc8a33f5c5ba7e3fa8e2e0a854a5f62169c&=&format=webp&quality=lossless&width=825&height=825" alt="Money Money Puggy">
+                </div>
+                <div class="brainrot-name">Money Money Puggy</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Ketchuru and Musturu -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429503103543279637/latest.png?ex=68f66002&is=68f50e82&hm=174e6f5424e70ae1db53d5df5e74d584dc8fbec0c798247ef97c92256e20e5ff&=&format=webp&quality=lossless" alt="Ketchuru and Musturu">
+                </div>
+                <div class="brainrot-name">Ketchuru and Musturu</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Garama and Madundung -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429501117179629638/latest.png?ex=68f65e29&is=68f50ca9&hm=1e429344baa6099a6b3beafa646d90f49e32be54f9ba88a21e5223ac00933007&=&format=webp&quality=lossless" alt="Garama and Madundung">
+                </div>
+                <div class="brainrot-name">Garama and Madundung</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Dragon Cannelloni -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500994458226888/latest.png?ex=68f65e0b&is=68f50c8b&hm=48641d4323c4282de2ad541c62ab9beee2f9b0a3daf125c823255172d61f03ae&=&format=webp&quality=lossless" alt="Dragon Cannelloni">
+                </div>
+                <div class="brainrot-name">Dragon Cannelloni</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Secret Lucky Block -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500935322996969/latest.png?ex=68f65dfd&is=68f50c7d&hm=88a65674e4f4f9ea659441bd37eea604744cfb61177677bddcfd972f57a343b7&=&format=webp&quality=lossless" alt="Secret Lucky Block">
+                </div>
+                <div class="brainrot-name">Secret Lucky Block</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- 67 -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500828149874780/latest.png?ex=68f65de4&is=68f50c64&hm=5010f3230d23e9e6b86ca62a57e2dbaae40cb27632e537bd193059a1ac3b4e08&=&format=webp&quality=lossless" alt="67">
+                </div>
+                <div class="brainrot-name">67</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- La Spooky Grande -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500768477515987/latest.png?ex=68f65dd6&is=68f50c56&hm=b1e5da1b6201b46ddccbde902fda257e6a7163cdbbcce7c3f8ff51e2e5713286&=&format=webp&quality=lossless" alt="La Spooky Grande">
+                </div>
+                <div class="brainrot-name">La Spooky Grande</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- La Supreme Combinasion -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500673598423101/latest.png?ex=68f65dbf&is=68f50c3f&hm=31d00096ba54488df117089aecda6955ac685b24d8768730679df92cf6a3d905&=&format=webp&quality=lossless" alt="La Supreme Combinasion">
+                </div>
+                <div class="brainrot-name">La Supreme Combinasion</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Los Mobilis -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500605755560071/latest.png?ex=68f65daf&is=68f50c2f&hm=1a1136b1431ec298734d56ec008d9d646fb6ff6cf9fe1234de58150073d65806&=&format=webp&quality=lossless" alt="Los Mobilis">
+                </div>
+                <div class="brainrot-name">Los Mobilis</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Las Sis -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500479758401638/latest.png?ex=68f65d91&is=68f50c11&hm=5299c97e7456776fa451868081e019c0afdb6fe638afac4dff166399fccd1add&=&format=webp&quality=lossless" alt="Las Sis">
+                </div>
+                <div class="brainrot-name">Las Sis</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Los Primos -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500373864939570/latest.png?ex=68f65d77&is=68f50bf7&hm=00f8703acac7bb3f88db944253f1c317c0f713a61635a3421a81e038e597fe39&=&format=webp&quality=lossless" alt="Los Primos">
+                </div>
+                <div class="brainrot-name">Los Primos</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Los Hotspotsitos -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500254478401627/latest.png?ex=68f65d5b&is=68f50bdb&hm=423694fb62e040929e0f59aef7e2541e7a3ca1fc324bc556a010f443e655d10f&=&format=webp&quality=lossless" alt="Los Hotspotsitos">
+                </div>
+                <div class="brainrot-name">Los Hotspotsitos</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Mariachi Corazoni -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500159481610392/latest.png?ex=68f65d44&is=68f50bc4&hm=04b96a7208be7f881dd4559fe8ea00be2177c91bab323a0e1663e607334de7db&=&format=webp&quality=lossless" alt="Mariachi Corazoni">
+                </div>
+                <div class="brainrot-name">Mariachi Corazoni</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Tacorita Bicicleta -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429500053956853932/latest.png?ex=68f65d2b&is=68f50bab&hm=5185a495f5c2625fbda08b91435710e567fe2afe1bde6434d5e771bb25d2546b&=&format=webp&quality=lossless" alt="Tacorita Bicicleta">
+                </div>
+                <div class="brainrot-name">Tacorita Bicicleta</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Perrito Burrito -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429499756748472481/latest.png?ex=68f65ce4&is=68f50b64&hm=5775b14962ccc09bd7cea7082ba95d780eb38c0a6ba64ce8ca80108451d5ed1f&=&format=webp&quality=lossless" alt="Perrito Burrito">
+                </div>
+                <div class="brainrot-name">Perrito Burrito</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Tralaledon -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429503020852314224/latest.png?ex=68f65fef&is=68f50e6f&hm=028889dc719f62b2270a02a0c9b65b55a110a13d89fcd4acdea1fba45b231ac8&=&format=webp&quality=lossless" alt="Tralaledon">
+                </div>
+                <div class="brainrot-name">Tralaledon</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- La Sahur Combinasion -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429499683058880743/latest.png?ex=68f65cd3&is=68f50b53&hm=69445adeb4b25093a9b8c2fd8fc2ad8f6cf691a4dc0595097c3f7672d12b6721&=&format=webp&quality=lossless" alt="La Sahur Combinasion">
+                </div>
+                <div class="brainrot-name">La Sahur Combinasion</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Los Tacoritas -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429499581468770426/latest.png?ex=68f65cbb&is=68f50b3b&hm=69c07e99265a8823562869225a711cef9c1154caa6567a7700c24cf02fbf9c5b&=&format=webp&quality=lossless" alt="Los Tacoritas">
+                </div>
+                <div class="brainrot-name">Los Tacoritas</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Los Bros -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429499498748576005/latest.png?ex=68f65ca7&is=68f50b27&hm=8c4e85c0ac7ce380df6c331c43ba2d7e8736c6076c964d1e3388686280d1cc99&=&format=webp&quality=lossless" alt="Los Bros">
+                </div>
+                <div class="brainrot-name">Los Bros</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+            
+            <!-- Los 67 -->
+            <div class="brainrot-card">
+                <div class="brainrot-icon">
+                    <img src="https://media.discordapp.net/attachments/1165607011942146079/1429503176179974215/latest.png?ex=68f66014&is=68f50e94&hm=d8ac2ce4e3537b425dcc87026d327dc90065c484b13ec3ad36b7c486d8f4fc15&=&format=webp&quality=lossless" alt="Los 67">
+                </div>
+                <div class="brainrot-name">Los 67</div>
+                <div class="available-indicator">Available</div>
+                <a href="https://www.roblox.com/share?code=55797af477a3af45a8c8cbafc39ff1bb&type=Server" class="join-btn">Join Server</a>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Steal A Brainrot &copy; 2023. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Создание звездного неба
+        let stars = [];
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Случайные позиции и размеры
+                const size = Math.random() * 2 + 1;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const opacity = Math.random() * 0.7 + 0.3;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+                star.style.opacity = opacity;
+                
+                starsContainer.appendChild(star);
+                
+                // Сохраняем информацию о звезде для анимации
+                stars.push({
+                    element: star,
+                    originalX: left,
+                    originalY: top,
+                    x: left,
+                    y: top
+                });
+            }
+        }
+        
+        // Анимация звезд при движении курсора
+        let mouseX = 0;
+        let mouseY = 0;
+        const attractionRadius = 30; // Радиус притяжения звезд
+        
+        document.addEventListener('mousemove', function(e) {
+            mouseX = (e.clientX / window.innerWidth) * 100;
+            mouseY = (e.clientY / window.innerHeight) * 100;
+        });
+        
+        function animateStars() {
+            stars.forEach(star => {
+                const dx = mouseX - star.x;
+                const dy = mouseY - star.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < attractionRadius) {
+                    // Притягиваем звезду к курсору
+                    const force = (attractionRadius - distance) / attractionRadius;
+                    star.x += dx * 0.02 * force;
+                    star.y += dy * 0.02 * force;
+                } else {
+                    // Плавно возвращаем звезду на место
+                    star.x += (star.originalX - star.x) * 0.05;
+                    star.y += (star.originalY - star.y) * 0.05;
+                }
+                
+                star.element.style.left = `${star.x}%`;
+                star.element.style.top = `${star.y}%`;
+            });
+            
+            requestAnimationFrame(animateStars);
+        }
+        
+        // Создание эффекта искр для кнопок
+        function createSparkEffect() {
+            const buttons = document.querySelectorAll('.join-btn');
+            
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function(e) {
+                    const buttonRect = this.getBoundingClientRect();
+                    
+                    // Большие искры
+                    const sparksCount = 6;
+                    for (let i = 0; i < sparksCount; i++) {
+                        const spark = document.createElement('div');
+                        spark.classList.add('spark');
+                        
+                        const angle = (i / sparksCount) * Math.PI * 2;
+                        const distance = 50;
+                        const x = Math.cos(angle) * distance;
+                        const y = Math.sin(angle) * distance;
+                        
+                        spark.style.left = `50%`;
+                        spark.style.top = `50%`;
+                        
+                        this.appendChild(spark);
+                        
+                        const animation = spark.animate([
+                            { 
+                                transform: `translate(-50%, -50%) translate(0, 0)`,
+                                opacity: 1
+                            },
+                            { 
+                                transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`,
+                                opacity: 0
+                            }
+                        ], {
+                            duration: 800,
+                            easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                        });
+                        
+                        animation.onfinish = () => {
+                            spark.remove();
+                        };
+                    }
+                    
+                    // Мини-искры (больше и быстрее)
+                    const miniSparksCount = 15;
+                    for (let i = 0; i < miniSparksCount; i++) {
+                        const miniSpark = document.createElement('div');
+                        miniSpark.classList.add('mini-spark');
+                        
+                        const angle = Math.random() * Math.PI * 2;
+                        const distance = 20 + Math.random() * 30;
+                        const x = Math.cos(angle) * distance;
+                        const y = Math.sin(angle) * distance;
+                        
+                        miniSpark.style.left = `50%`;
+                        miniSpark.style.top = `50%`;
+                        
+                        this.appendChild(miniSpark);
+                        
+                        const animation = miniSpark.animate([
+                            { 
+                                transform: `translate(-50%, -50%) translate(0, 0)`,
+                                opacity: 0.8
+                            },
+                            { 
+                                transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`,
+                                opacity: 0
+                            }
+                        ], {
+                            duration: 400 + Math.random() * 300,
+                            easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                        });
+                        
+                        animation.onfinish = () => {
+                            miniSpark.remove();
+                        };
+                    }
+                });
+            });
+        }
+        
+        // Создание метеоритов с улучшенным эффектом
+        function createMeteor() {
+            const meteor = document.createElement('div');
+            meteor.classList.add('meteor');
+            
+            // Создаем след метеорита
+            const trail = document.createElement('div');
+            trail.classList.add('meteor-trail');
+            
+            // Случайная начальная позиция
+            const startX = Math.random() * 100;
+            const startY = -10;
+            const endX = startX + (Math.random() * 40 - 20);
+            const endY = 110;
+            
+            meteor.style.left = `${startX}%`;
+            meteor.style.top = `${startY}%`;
+            
+            trail.style.left = `${startX}%`;
+            trail.style.top = `${startY}%`;
+            
+            document.body.appendChild(meteor);
+            document.body.appendChild(trail);
+            
+            // Анимация падения метеорита
+            const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+            trail.style.transform = `rotate(${angle}deg)`;
+            
+            const meteorAnimation = meteor.animate([
+                { 
+                    transform: `translate(0, 0)`,
+                    opacity: 1,
+                    width: '3px',
+                    height: '3px'
+                },
+                { 
+                    transform: `translate(${endX - startX}%, ${endY - startY}%)`,
+                    opacity: 0,
+                    width: '8px',
+                    height: '8px'
+                }
+            ], {
+                duration: 2000,
+                easing: 'cubic-bezier(0.55, 0.085, 0.68, 0.53)'
+            });
+            
+            const trailAnimation = trail.animate([
+                { 
+                    opacity: 0.8,
+                    width: '0px'
+                },
+                { 
+                    opacity: 0,
+                    width: '150px'
+                }
+            ], {
+                duration: 1500,
+                easing: 'cubic-bezier(0.55, 0.085, 0.68, 0.53)'
+            });
+            
+            meteorAnimation.onfinish = () => {
+                meteor.remove();
+            };
+            
+            trailAnimation.onfinish = () => {
+                trail.remove();
+            };
+        }
+        
+        // Запуск метеоритов каждые 10 секунд
+        function startMeteorShower() {
+            createMeteor();
+            setInterval(createMeteor, 10000);
+        }
+        
+        // Таймер обратного отсчета
+        function startCountdown() {
+            const targetDate = new Date('October 22, 2025 03:00:00').getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const timeLeft = targetDate - now;
+                
+                if (timeLeft < 0) {
+                    document.getElementById('days').textContent = '00';
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                    return;
+                }
+                
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            createSparkEffect();
+            startMeteorShower();
+            startCountdown();
+            animateStars();
+        });
+    </script>
+</body>
+</html>
